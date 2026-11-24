@@ -1,0 +1,21 @@
+# Środowisko wirtualne Pythona
+.venv/
+venv/
+env/
+
+# Pliki cache Pythona
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ustawienia PyCharma / IDE
+.idea/
+.vscode/
+
+# Pliki systemowe (Windows / macOS)
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Zmienne środowiskowe (dobra praktyka na przyszłość)
+.env
