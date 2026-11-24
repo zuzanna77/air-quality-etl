@@ -1,8 +1,8 @@
 {
   "city": "Krakow",
-  "past_days": 6,
+  "past_days": 5,
   "data_quality": {
-    "total_records": 264,
+    "total_records": 240,
     "missing_values": {
       "pm10": 0,
       "pm2_5": 0,

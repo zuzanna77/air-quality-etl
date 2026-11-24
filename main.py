@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 from config import CITIES
 from api_client import fetch_air_quality
+from database import init_db, save_to_db, get_cities_summary
 from processor import (
     build_dataframe,
     analyze_quality,
@@ -31,6 +32,11 @@ def main():
     cleaned_df = clean_and_enrich(df)
     daily_stats = compute_daily_stats(cleaned_df)
 
+    # Zapis do bazy SQLite
+    init_db()
+    saved_rows = save_to_db(cleaned_df, city)
+    print(f"Zapisano/zaktualizowano {saved_rows} rekordów w bazie SQLite.")
+
     # Zapis wyników do folderu output/
     output_dir = Path("output")
     output_dir.mkdir(exist_ok=True)
@@ -56,6 +62,9 @@ def main():
     print("\n--- Podsumowanie ---")
     print(daily_stats.to_string(index=False))
     print(f"\nZapisano pliki w folderze '{output_dir}/'.")
+
+    print("\n--- Porównanie miast w bazie SQLite (SQL) ---")
+    print(get_cities_summary().to_string(index=False))
 
 
 if __name__ == "__main__":
