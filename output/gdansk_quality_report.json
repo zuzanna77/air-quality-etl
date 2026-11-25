@@ -1,0 +1,19 @@
+{
+  "city": "Gdansk",
+  "past_days": 4,
+  "data_quality": {
+    "total_records": 107,
+    "missing_values": {
+      "pm10": 0,
+      "pm2_5": 0,
+      "nitrogen_dioxide": 0
+    },
+    "negative_anomalies": {
+      "pm10": 0,
+      "pm2_5": 0,
+      "nitrogen_dioxide": 0
+    }
+  },
+  "worst_pm10_day": "2026-11-21",
+  "max_pm10_recorded": 16.9
+}
