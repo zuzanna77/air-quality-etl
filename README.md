@@ -1,31 +1,34 @@
 # Air Quality ETL & Data Quality Analyzer
 
-Aplikacja w języku Python realizująca kompletny potok **ETL (Extract → Transform → Load)** dla danych o jakości powietrza. Narzędzie pobiera historyczne pomiary stężeń pyłów zawieszonych (PM10, PM2.5) oraz dwutlenku azotu (NO₂) dla wybranych polskich miast z publicznego API **Open-Meteo Air Quality**, weryfikuje ich jakość, czyści dane oraz generuje raporty analityczne.
+Modułowy pipeline ETL w języku Python, który pobiera historyczne dane o jakości powietrza (PM10, PM2.5) z publicznego REST API, waliduje i czyści zbiór danych, zapisuje zdeduplikowane rekordy w bazie SQLite oraz generuje dzienne statystyki, analityczne raporty SQL i wykresy w Matplotlib.
+
+## Przykładowa wizualizacja
+
+![Średnie dobowe stężenie PM10 i PM2.5 – Warszawa](output/warszawa_air_quality.png)
 
 ## Główne funkcjonalności
 
-* **Extract (Pobieranie):** Komunikacja z REST API za pomocą parametryzowanych zapytań HTTP (`requests`) z obsługą błędów sieciowych i statusów odpowiedzi.
-* **Transform (Walidacja i analiza):**
-  * Konwersja surowych danych JSON do struktury `pandas.DataFrame`.
-  * Ocena jakości danych: zliczanie brakujących wartości (`NaN`) oraz wykrywanie anomalii czujników (wartości ujemne).
-  * Czyszczenie zbioru oraz flagowanie godzin z przekroczeniem dobowych norm jakości powietrza (PM10 > 50 µg/m³, PM2.5 > 25 µg/m³).
-  * Obliczanie dziennych statystyk (`groupby`, `agg`): średnia, mediana, maksimum oraz liczba godzin z przekroczeniem normy.
-* **Load (Eksport):** Zapis oczyszczonych danych i statystyk dziennych do plików `.csv` oraz raportu jakościowego do pliku `.json`.
+- **Extract (Pobieranie):** Pobieranie godzinowych pomiarów jakości powietrza z publicznego REST API (`requests`) z obsługą parametrów zapytań i błędów.
+- **Transform & Validate (Przetwarzanie i walidacja):** Wykorzystanie biblioteki `pandas` do wykrywania brakujących wartości i anomalii sensorów, czyszczenia surowych pomiarów, oznaczania przekroczeń norm oraz obliczania dziennych agregacji.
+- **Load & Persist (Zapis danych):** Zapisywanie zdeduplikowanych rekordów w lokalnej bazie SQLite (`database.py`) oraz eksport oczyszczonych danych, statystyk dobowych i raportów jakości danych do plików CSV i JSON.
+- **Analityka SQL:** Zestaw zapytań analitycznych (`queries.sql`) wykorzystujących `GROUP BY`, `CASE WHEN`, `HAVING`, CTE (`WITH`) oraz funkcje okna (`ROW_NUMBER()`).
+- **Wizualizacja:** Generowanie wykresów dziennych trendów PM10 i PM2.5 wraz z linią normy dobowej za pomocą `Matplotlib` (`visualizer.py`).
 
 ## Technologie
 
-* Python 3.x
-* `requests`
-* `pandas`
+- **Język:** Python 3
+- **Przetwarzanie i wizualizacja danych:** `pandas`, `matplotlib`
+- **API i przechowywanie danych:** `requests`, `sqlite3`, JSON, CSV
+- **Analityka:** SQL (SQLite)
 
 ## Struktura projektu
 
 ```text
 air-quality-etl/
-├── main.py              # Główny skrypt uruchamiający aplikację
-├── api_client.py        # Moduł odpowiedzialny za pobieranie danych z API
-├── processor.py         # Walidacja, czyszczenie i agregacja danych (pandas)
-├── config.py            # Konfiguracja miast (współrzędne) oraz norm jakości powietrza
-├── requirements.txt     # Lista wymaganych bibliotek
-├── output/              # Wygenerowane pliki wynikowe (CSV oraz JSON)
-└── README.md            # Dokumentacja projektu
+├── main.py             # Główny plik uruchamiający cały pipeline ETL
+├── processor.py        # Walidacja, czyszczenie danych i agregacje dobowe (pandas)
+├── database.py         # Inicjalizacja schematu SQLite, zapis bez duplikatów i zapytania podsumowujące
+├── visualizer.py       # Skrypt Matplotlib generujący wykresy jakości powietrza
+├── queries.sql         # Analityczne zapytania SQL (CASE WHEN, HAVING, CTE, funkcje okna)
+├── requirements.txt    # Lista zależności projektu
+└── output/             # Wygenerowane raporty CSV/JSON oraz wykresy PNG
