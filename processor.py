@@ -3,17 +3,19 @@ from config import NORMS
 
 
 def build_dataframe(raw_data: dict) -> pd.DataFrame:
-    """Zamienia sekcję 'hourly' z JSON-a na pandas DataFrame."""
+    """Zamienia sekcję 'hourly' z JSON-a na DataFrame (tylko godziny do teraz)."""
     hourly = raw_data.get("hourly", {})
     df = pd.DataFrame(hourly)
 
-    # Konwersja czasu na typ datetime i rozdzielenie na datę oraz godzinę
     df["time"] = pd.to_datetime(df["time"])
+
+    # API zwraca też prognozę na kolejne dni - odrzucamy godziny z przyszłości
+    now = pd.Timestamp.now(tz="Europe/Warsaw").tz_localize(None)
+    df = df[df["time"] <= now].copy()
+
     df["date"] = df["time"].dt.date.astype(str)
     df["hour"] = df["time"].dt.hour
-
     return df
-
 
 def analyze_quality(df: pd.DataFrame) -> dict:
     """Sprawdza braki danych oraz ewentualne anomalie (wartości ujemne)."""
@@ -36,14 +38,14 @@ def clean_and_enrich(df: pd.DataFrame) -> pd.DataFrame:
     """Usuwa niepoprawne rekordy i dodaje kolumny z przekroczeniami norm."""
     cleaned = df.copy()
 
-    # Zamiana wartości ujemnych (błędy czujników) na NaN
+    # Zamiana wartości ujemnych (niepoprawne) na NaN
     for col in ["pm10", "pm2_5", "nitrogen_dioxide"]:
         cleaned.loc[cleaned[col] < 0, col] = pd.NA
 
     # Usunięcie wierszy, gdzie brakuje jednocześnie PM10 i PM2.5
     cleaned = cleaned.dropna(subset=["pm10", "pm2_5"], how="all")
 
-    # Flagi przekroczeń norm
+    # Godzina powyżej progu dobowego (informacyjnie; właściwa norma dotyczy średniej dobowej)
     cleaned["pm10_exceeded"] = cleaned["pm10"] > NORMS["pm10"]
     cleaned["pm2_5_exceeded"] = cleaned["pm2_5"] > NORMS["pm2_5"]
 
@@ -59,9 +61,14 @@ def compute_daily_stats(df: pd.DataFrame) -> pd.DataFrame:
             pm10_median=("pm10", "median"),
             pm10_max=("pm10", "max"),
             pm2_5_mean=("pm2_5", "mean"),
-            pm10_hours_exceeded=("pm10_exceeded", "sum"),
+            pm2_5_max=("pm2_5", "max"),
+            pm10_hours_above=("pm10_exceeded", "sum"),
         )
         .round(2)
         .reset_index()
     )
+
+    # Norma dobowa porównywana ze średnią dobową
+    daily["pm10_day_exceeded"] = daily["pm10_mean"] > NORMS["pm10"]
+    daily["pm2_5_day_exceeded"] = daily["pm2_5_mean"] > NORMS["pm2_5"]
     return daily

@@ -13,3 +13,9 @@ NORMS = {
     "pm10": 50.0,
     "pm2_5": 25.0,
 }
+# Progi dobowe (µg/m³) - PM10: 50, PM2.5: 25.
+# WHO (wytyczne 2021) zaleca niższe wartości: 45 / 15.
+NORMS = {
+    "pm10": 50.0,
+    "pm2_5": 25.0,
+}

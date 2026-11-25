@@ -36,6 +36,8 @@ def plot_daily_air_quality(db_path: Path = DB_PATH) -> None:
 
         # Linia normy dobowej PM10 (50 µg/m³)
         plt.axhline(y=50, color="red", linestyle="--", linewidth=1, label="Norma PM10 (50 µg/m³)")
+        # Linia normy dobowej PM2.5 (25 µg/m³)
+        plt.axhline(y=25, color="orange", linestyle="--", linewidth=1, label="Norma PM2.5 (25 µg/m³)")
 
         plt.title(f"Średnie dobowe stężenie PM10 i PM2.5 – {city}")
         plt.xlabel("Data")

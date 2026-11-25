@@ -9,6 +9,7 @@ def fetch_air_quality(latitude: float, longitude: float, past_days: int = 7) -> 
         "longitude": longitude,
         "hourly": "pm10,pm2_5,nitrogen_dioxide",
         "past_days": past_days,
+        "forecast_days": 1,
         "timezone": "Europe/Warsaw",
     }
 
