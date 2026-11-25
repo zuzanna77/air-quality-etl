@@ -8,11 +8,6 @@ CITIES = {
     "Zakopane": {"latitude": 49.2992, "longitude": 19.9496},
 }
 
-# Dobowe normy jakości powietrza (µg/m³)
-NORMS = {
-    "pm10": 50.0,
-    "pm2_5": 25.0,
-}
 # Progi dobowe (µg/m³) - PM10: 50, PM2.5: 25.
 # WHO (wytyczne 2021) zaleca niższe wartości: 45 / 15.
 NORMS = {
