@@ -1,6 +1,6 @@
 # Air Quality ETL & Data Quality Analyzer
 
-Modułowy pipeline ETL w języku Python, który pobiera pobiera modelowane dane godzinowe o jakości powietrza (PM10, PM2.5, NO₂) z publicznego REST API, waliduje i czyści zbiór danych, zapisuje zdeduplikowane rekordy w bazie SQLite oraz generuje dzienne statystyki, analityczne raporty SQL i wykresy w Matplotlib.
+Modułowy pipeline ETL w języku Python, który pobiera modelowane dane godzinowe o jakości powietrza (PM10, PM2.5, NO₂) z publicznego REST API, waliduje i czyści zbiór danych, zapisuje zdeduplikowane rekordy w bazie SQLite oraz generuje dzienne statystyki, analityczne raporty SQL i wykresy w Matplotlib.
 
 ## Przykładowa wizualizacja
 
@@ -12,14 +12,11 @@ Modułowy pipeline ETL w języku Python, który pobiera pobiera modelowane dane 
 - **Transform & Validate (Przetwarzanie i walidacja):** Wykorzystanie biblioteki `pandas` do wykrywania brakujących wartości i wartości nieprawidłowych (braki, ujemne), czyszczenia surowych danych, oznaczania przekroczeń norm oraz obliczania dziennych agregacji.
 - **Load & Persist (Zapis danych):** Zapisywanie zdeduplikowanych rekordów w lokalnej bazie SQLite (`database.py`) oraz eksport oczyszczonych danych, statystyk dobowych i raportów jakości danych do plików CSV i JSON.
 - **Analityka SQL:** Zestaw zapytań analitycznych (`queries.sql`) wykorzystujących `GROUP BY`, `CASE WHEN`, `HAVING`, CTE (`WITH`) oraz funkcje okna (`ROW_NUMBER()`).
-- **Wizualizacja:** Generowanie wykresów dziennych trendów PM10 i PM2.5 wraz z linią normy dobowej za pomocą `Matplotlib` (`visualizer.py`).
+- **Wizualizacja:** Generowanie wykresów dziennych trendów PM10 i PM2.5 wraz z liniami norm dobowych za pomocą `Matplotlib` (`visualizer.py`).
 
 ## Źródło danych
 
-Dane pochodzą z [Open-Meteo Air Quality API](https://open-meteo.com/en/docs/air-quality-api).
-Są to **modelowane wartości** z europejskiej prognozy jakości powietrza
-CAMS (Copernicus Atmosphere Monitoring Service, ok. 11 km), a nie pomiary
-z lokalnych stacji. Dane CAMS dostarcza Open-Meteo (licencja CC BY 4.0).
+Dane pochodzą z [Open-Meteo Air Quality API](https://open-meteo.com/en/docs/air-quality-api). Są to **modelowane wartości** z europejskiej prognozy jakości powietrza CAMS (Copernicus Atmosphere Monitoring Service, ok. 11 km), a nie pomiary z lokalnych stacji. Dane CAMS dostarcza Open-Meteo (licencja CC BY 4.0).
 
 ## Technologie
 
@@ -30,7 +27,7 @@ z lokalnych stacji. Dane CAMS dostarcza Open-Meteo (licencja CC BY 4.0).
 
 ## Struktura projektu
 
-```text
+```
 air-quality-etl/
 ├── main.py             # Główny plik uruchamiający pipeline ETL
 ├── api_client.py       # Pobieranie danych z Open-Meteo Air Quality API
@@ -42,6 +39,7 @@ air-quality-etl/
 ├── requirements.txt    # Zależności projektu
 ├── .gitignore
 └── output/             # Raporty CSV/JSON, wykresy PNG (baza .db jest ignorowana przez git)
+```
 
 ## Instalacja i uruchomienie
 
@@ -56,9 +54,7 @@ python main.py                # pobranie, czyszczenie, zapis (CSV, JSON, SQLite)
 python visualizer.py          # wykresy dla wszystkich miast zapisanych w bazie
 ```
 
-Zapytania analityczne uruchomisz np. poleceniem
-`sqlite3 output/air_quality.db < queries.sql`
-lub w programie DB Browser for SQLite.
+Zapytania analityczne uruchomisz np. poleceniem `sqlite3 output/air_quality.db < queries.sql` lub w programie DB Browser for SQLite.
 
 ## Dane wyjściowe (`output/`)
 
